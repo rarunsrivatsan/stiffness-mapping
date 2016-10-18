@@ -178,13 +178,13 @@ classdef stiffness_map_gen
                     
                     % Z threshold so that outliers do not enter
                     % the Z calibration data
-                    %                     if obj.outputRaw.z(count)>50
-                    %                         continue;
-                    %                     else
-                    obj.outputFilt.z(count)=obj.outputRaw.z(count);
-                    set(obj.plots.scHandle,'XData',obj.outputFilt.z,'YData',obj.outputFilt.force);
-                    count=count+1;
-                    %                     end
+%                     if obj.outputRaw.z(count)>50
+%                         continue;
+%                     else
+                        obj.outputFilt.z(count)=obj.outputRaw.z(count);
+                        set(obj.plots.scHandle,'XData',obj.outputFilt.z,'YData',obj.outputFilt.force);
+                        count=count+1;
+%                     end
                 end
                 
                 pause(0.01);
@@ -290,9 +290,9 @@ classdef stiffness_map_gen
         end
         
         function obj=space_quiver(obj,t)
-            count=1;
-            [tool(:,:,1),em(:,:,1)]=fetchTF(obj.trak.sub);
-            obj.fHandle=figure;
+            tic;
+            [tool,em]=fetchTF(obj.trak.sub);
+               
             emFig=quiver3(em(1,4),em(2,4),em(3,4),em(1,1),em(2,1),em(3,1),'r');
             hold on;
             toolFig=quiver3(tool(1,4),tool(2,4),tool(3,4),tool(1,1),tool(2,1),tool(3,1),'b');
@@ -300,20 +300,17 @@ classdef stiffness_map_gen
             xlabel('X Axis');
             ylabel('Y Axis');
             zlabel('Z Axis');
-            axis auto;grid on;
+            axis equal;grid on;
             view(-74,-48);
-            tic;
-            while (ishghandle(obj.fHandle) && toc<t)
-                [tool(:,:,count),em(:,:,count)]=fetchTF(obj.trak.sub);
-                set(emFig,'XData',em(1,4,:)*1000,'YData',em(2,4,:)*1000,'ZData',em(3,4,:)*1000,...
-                    'UData',em(1,1,:),'VData',em(2,1,:),'WData',em(3,1,:));
-                %                em(3,4,:)*1000
-                set(toolFig,'XData',tool(1,4,:)*1000,'YData',tool(2,4,:)*1000,'ZData',tool(3,4,:)*1000,...
-                    'UData',tool(1,1,:),'VData',tool(2,1,:),'WData',tool(3,1,:));
-                pause(0.01);
-                count=count+1;
+            count=1;
+            
+            while toc<t
+               [tool,em]=fetchTF(obj.trak.sub);
+               set(emFig,'XData',em(1,4),'YData',yt,'ZData',zt,'UData',vec(:,1),'VData',vec(:,2),'WData',vec(:,3));
+               set(fig2,'XData',x,'YData',y,'ZData',z,'UData',emvec(:,1),'VData',emvec(:,2),'WData',emvec(:,3));
+               pause(0.01);
+               count=count+1;
             end
         end
-        
     end
 end
