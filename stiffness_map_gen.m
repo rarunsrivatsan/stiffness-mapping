@@ -301,17 +301,17 @@ classdef stiffness_map_gen
             ylabel('Y Axis');
             zlabel('Z Axis');
             axis auto;grid on;
-            view(-74,-48);
+            view(-90,0);
             tic;
             while (ishghandle(obj.fHandle) && toc<t)
                 [tool(:,:,count),em(:,:,count)]=fetchTF(obj.trak.sub);
                 set(emFig,'XData',em(1,4,:)*1000,'YData',em(2,4,:)*1000,'ZData',em(3,4,:)*1000,...
                     'UData',em(1,1,:),'VData',em(2,1,:),'WData',em(3,1,:));
-                %                em(3,4,:)*1000
                 set(toolFig,'XData',tool(1,4,:)*1000,'YData',tool(2,4,:)*1000,'ZData',tool(3,4,:)*1000,...
-                    'UData',tool(1,1,:),'VData',tool(2,1,:),'WData',tool(3,1,:));
-                pause(0.01);
+                     'UData',tool(1,1,:),'VData',tool(2,1,:),'WData',tool(3,1,:));
+                 pause(0.01);
                 count=count+1;
+                %disp(em(3,4,count));
             end
         end
         

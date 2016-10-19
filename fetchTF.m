@@ -3,7 +3,7 @@ function [tool,emmat]=fetchTF(sub)
 Tmat=zeros(4,4);
 Tmat(1:3,1:3)=eye(3);
 Tmat(4,4)=1;
-Tmat(1,4)=123*10^-3;
+Tmat(1,4)=122*10^-3;
 
 x=sub.LatestMessage.Translation.X;
 y=sub.LatestMessage.Translation.Y;
