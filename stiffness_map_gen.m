@@ -59,7 +59,8 @@ classdef stiffness_map_gen
             end
             
             count=1;
-            while(ishghandle(obj.fHandle))
+            %ishghandle(obj.fHandle)
+            while(1)
                 % Obtain latest measurements and then subtract the bias
                 % from it, store for further use.
                 obj.outputRaw.fvec.X(count)=(obj.opto.optoSub.LatestMessage.Wrench.Force.X-obj.opto.bias.X)/1000;
@@ -77,8 +78,11 @@ classdef stiffness_map_gen
                     % DO STUFF HERE according to readings
                     obj.outputFilt.force(count)=obj.outputRaw.optoMag(count);
                     [obj.outputFilt.x(count),obj.outputFilt.y(count),obj.outputFilt.z(count)]=fetchXYZtool(obj.trak.sub);
-                    obj.outputFilt.stiffness(count)=abs(obj.outputFilt.force(count)./-(obj.outputFilt.z(count)-obj.meanz));
-                    
+                    if (obj.outputFilt.z(count)>(obj.meanz-2) && obj.outputFilt.z(count)<(obj.meanz+2))
+                        obj.outputFilt.stiffness(count)=abs(obj.outputFilt.force(count)./-(obj.outputFilt.z(count)-obj.meanz));
+                    else
+                        continue;
+                    end
                     if count>15
                         tri=delaunay(obj.outputFilt.x,obj.outputFilt.y);
                         set(obj.plots.sHandle,'faces',tri,'vertices',[obj.outputFilt.x(:) obj.outputFilt.y(:) obj.outputFilt.stiffness(:)],'facevertexcdata',obj.outputFilt.stiffness(:));
@@ -308,8 +312,8 @@ classdef stiffness_map_gen
                 set(emFig,'XData',em(1,4,:)*1000,'YData',em(2,4,:)*1000,'ZData',em(3,4,:)*1000,...
                     'UData',em(1,1,:),'VData',em(2,1,:),'WData',em(3,1,:));
                 set(toolFig,'XData',tool(1,4,:)*1000,'YData',tool(2,4,:)*1000,'ZData',tool(3,4,:)*1000,...
-                     'UData',tool(1,1,:),'VData',tool(2,1,:),'WData',tool(3,1,:));
-                 pause(0.01);
+                    'UData',tool(1,1,:),'VData',tool(2,1,:),'WData',tool(3,1,:));
+                pause(0.01);
                 count=count+1;
                 %disp(em(3,4,count));
             end
